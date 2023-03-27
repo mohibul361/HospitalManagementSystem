@@ -1,25 +1,23 @@
-package com.example.mypkg.Service;
+package com.example.HospitalManagementSystem.Service;
 
-import com.example.mypkg.Model.Receptionist;
-import com.example.mypkg.Payload.Request.ReceptionistRequest;
-import com.example.mypkg.Payload.Response.MessageResponse;
-import com.example.mypkg.Repository.ReceptionistRepository;
-import com.example.mypkg.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Model.Receptionist;
+import com.example.HospitalManagementSystem.Payload.Request.ReceptionistRequest;
+import com.example.HospitalManagementSystem.Payload.Response.MessageResponse;
+import com.example.HospitalManagementSystem.Repository.ReceptionistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
-public class ReceptionistServiceImpl implements ReceptionistService {
-	
+public class ReceptionistServiceImpl implements ReceptionistService{
     @Autowired
     ReceptionistRepository receptionistRepository;
 
     @Override
     public MessageResponse createReceptionist(ReceptionistRequest receptionistRequest) {
-    	Receptionist newReceptionist = new Receptionist();
+        Receptionist newReceptionist = new Receptionist();
         newReceptionist.setFirstName(receptionistRequest.getFirstName());
         newReceptionist.setLastname(receptionistRequest.getLastname());
         newReceptionist.setPhoneNumber(receptionistRequest.getPhoneNumber());
@@ -31,19 +29,19 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     }
 
     @Override
-    public Optional<Receptionist> updateReceptionist(Integer receptionistId, ReceptionistRequest receptionistRequest)  throws ResourceNotFoundException{
+    public MessageResponse updateReceptionist(Integer receptionistId, ReceptionistRequest receptionistRequest)  throws ResourceNotFoundException{
         Optional<Receptionist> receptionist = receptionistRepository.findById(receptionistId);
         if (receptionist.isEmpty()){
-        throw new ResourceNotFoundException("Receptionist", "id", receptionistId);
+            throw new ResourceNotFoundException("Receptionist", "id", receptionistId);
         }
         else
-        receptionist.get().setFirstName(receptionistRequest.getFirstName());
+            receptionist.get().setFirstName(receptionistRequest.getFirstName());
         receptionist.get().setLastname(receptionistRequest.getLastname());
         receptionist.get().setPhoneNumber(receptionistRequest.getPhoneNumber());
         receptionist.get().setEmail(receptionistRequest.getEmail());
         receptionist.get().setSalary(receptionistRequest.getSalary());
         receptionistRepository.save(receptionist.get());
-        return receptionist;
+        return new MessageResponse("Receptionist edited successfully");
     }
 
     @Override
@@ -56,9 +54,11 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         return receptionistRepository.findAll();
     }
     @Override
-    public void deleteReceptionist(Integer receptionistId) throws ResourceNotFoundException {
+    public MessageResponse deleteReceptionist(Integer receptionistId) throws ResourceNotFoundException {
         if (receptionistRepository.getById(receptionistId).getId().equals(receptionistId)){
-        	receptionistRepository.deleteById(receptionistId);
+            receptionistRepository.deleteById(receptionistId);
+            return new MessageResponse("Receptionist deleted successfully");
+
         }
         else throw new ResourceNotFoundException("Receptionist", "id",receptionistId);
     }
