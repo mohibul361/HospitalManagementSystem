@@ -1,10 +1,10 @@
-package com.example.mypkg.Service;
+package com.example.HospitalManagementSystem.Service;
 
-import com.example.mypkg.Model.Patient;
-import com.example.mypkg.Payload.Request.PatientRequest;
-import com.example.mypkg.Payload.Response.MessageResponse;
-import com.example.mypkg.Repository.PatientRepository;
-import com.example.mypkg.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Model.Patient;
+import com.example.HospitalManagementSystem.Payload.Request.PatientRequest;
+import com.example.HospitalManagementSystem.Payload.Response.MessageResponse;
+import com.example.HospitalManagementSystem.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PatientServiceImpl implements PatientService {
-	
+public class PatientServiceImpl implements PatientService{
     @Autowired
     PatientRepository patientRepository;
 
@@ -21,10 +20,9 @@ public class PatientServiceImpl implements PatientService {
     public MessageResponse createPatient(PatientRequest patientRequest) {
         Patient newPatient = new Patient();
         newPatient.setFirstName(patientRequest.getFirstName());
-        newPatient.setLastname(patientRequest.getLastname());
-        newPatient.setPhoneNumber(patientRequest.getAddress());
-        newPatient.setPhoneNumber(patientRequest.getGender());
-        newPatient.setPhoneNumber(patientRequest.getDisease());
+        newPatient.setAddress(patientRequest.getAddress());
+        newPatient.setGender(patientRequest.getGender());
+        newPatient.setDisease(patientRequest.getDisease());
         newPatient.setPhoneNumber(patientRequest.getPhoneNumber());
         newPatient.setEmail(patientRequest.getEmail());
         patientRepository.save(newPatient);
@@ -33,21 +31,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Optional<Patient> updatePatient(Integer patientId, PatientRequest patientRequest)  throws ResourceNotFoundException{
+    public MessageResponse updatePatient(Integer patientId, PatientRequest patientRequest)  throws ResourceNotFoundException {
         Optional<Patient> patient = patientRepository.findById(patientId);
         if (patient.isEmpty()){
-        throw new ResourceNotFoundException("Patient", "id", patientId);
+            throw new ResourceNotFoundException("Patient", "id", patientId);
         }
         else
-        patient.get().setFirstName( patientRequest.getFirstName());
-        patient.get().setLastname(patientRequest.getLastname());
+            patient.get().setFirstName( patientRequest.getFirstName());
         patient.get().setAddress(patientRequest.getAddress());
         patient.get().setGender(patientRequest.getGender());
         patient.get().setDisease(patientRequest.getDisease());
         patient.get().setPhoneNumber(patientRequest.getPhoneNumber());
         patient.get().setEmail(patientRequest.getEmail());
         patientRepository.save(patient.get());
-        return patient;
+        return new MessageResponse("Patient edited successfully");
     }
 
     @Override
@@ -60,10 +57,23 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findAll();
     }
     @Override
-    public void deletePatient(Integer patientId) throws ResourceNotFoundException {
+    public MessageResponse deletePatient(Integer patientId) throws ResourceNotFoundException {
         if (patientRepository.getById(patientId).getId().equals(patientId)){
             patientRepository.deleteById(patientId);
+            return new MessageResponse("Patient deleted successfully");
         }
         else throw new ResourceNotFoundException("Patient", "id", patientId);
     }
+
+    public List<Patient> getPatientByGender(String gender) throws ResourceNotFoundException{
+        List<Patient>  patient = patientRepository.findPatientByGender(gender);
+        if(patient == null){
+            throw new ResourceNotFoundException("Patient", "gender", gender);
+        }
+        else {
+            return patient;
+        }
+
+    }
+
 }
