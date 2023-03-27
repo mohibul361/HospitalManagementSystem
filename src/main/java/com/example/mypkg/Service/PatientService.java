@@ -1,18 +1,18 @@
-package com.example.mypkg.Service;
+package com.example.HospitalManagementSystem.Service;
 
-import com.example.mypkg.Model.Patient;
-import com.example.mypkg.Payload.Request.PatientRequest;
-import com.example.mypkg.Payload.Response.MessageResponse;
+import com.example.HospitalManagementSystem.Model.Patient;
+import com.example.HospitalManagementSystem.Payload.Request.PatientRequest;
+import com.example.HospitalManagementSystem.Payload.Response.MessageResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public interface PatientService {
     MessageResponse createPatient(PatientRequest patientRequest);
-    Optional<Patient> updatePatient(Integer patientId, PatientRequest patientRequest);
-    void deletePatient(Integer patientId);
+    MessageResponse updatePatient(Integer patientId, PatientRequest patientRequest);
+    MessageResponse deletePatient(Integer patientId);
     Patient getASinglePatient(Integer patientId);
     List<Patient> getAllPatient();
+    List<Patient> getPatientByGender(String gender);
 }
