@@ -3,8 +3,9 @@ package com.example.mypkg.Model;
 import javax.persistence.*;
 import java.util.Objects;
 
+
 @Entity
-public class Invoice {
+public class Prescription {
     @Id
     @GeneratedValue
     private Integer id;
@@ -13,15 +14,17 @@ public class Invoice {
     @JoinColumn(name="appointment_id")
     private Appointment appointment;
 
-    private double totalAmount;
+    private String description;
 
-    public Invoice(){}
+
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public Appointment getAppointment() {
         return appointment;
@@ -31,32 +34,25 @@ public class Invoice {
         this.appointment = appointment;
     }
 
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
+    public String getDescription() {
+        return description;
     }
 
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "id=" + id +
-                ", appointment=" + appointment +
-                ", totalAmount=" + totalAmount +
-                '}';
+    public void setDescription(String description) {
+        this.description = description;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Invoice invoice = (Invoice) o;
-        return Double.compare(invoice.totalAmount, totalAmount) == 0 && Objects.equals(id, invoice.id)  && Objects.equals(appointment, invoice.appointment);
+        Prescription prescription = (Prescription) o;
+        return  Objects.equals(id, prescription.id)  && Objects.equals(description, prescription.description)  &&  Objects.equals(appointment, prescription.appointment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, appointment,  totalAmount);
+        return Objects.hash(id,  appointment, description);
     }
 }
