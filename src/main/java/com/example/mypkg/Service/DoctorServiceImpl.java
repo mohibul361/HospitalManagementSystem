@@ -1,20 +1,24 @@
-package com.example.mypkg.Service;
+package com.example.HospitalManagementSystem.Service;
 
-import com.example.mypkg.Model.Doctor;
-import com.example.mypkg.Payload.Request.DoctorRequest;
-import com.example.mypkg.Payload.Response.MessageResponse;
-import com.example.mypkg.Repository.DoctorRepository;
-import com.example.mypkg.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Exception.ResourceNotFoundException;
+import com.example.HospitalManagementSystem.Model.Doctor;
+import com.example.HospitalManagementSystem.Payload.Request.DoctorRequest;
+import com.example.HospitalManagementSystem.Payload.Response.MessageResponse;
+import com.example.HospitalManagementSystem.Repository.DoctorRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
     @Autowired
     DoctorRepository doctorRepository;
+
 
     @Override
     public MessageResponse createDoctor(DoctorRequest doctorRequest) {
@@ -30,21 +34,23 @@ public class DoctorServiceImpl implements DoctorService {
 
     }
 
+
+
     @Override
-    public Optional<Doctor> updateDoctor(Integer doctorId, DoctorRequest doctorRequest)  throws ResourceNotFoundException{
-        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
-        if (doctor.isEmpty()){
-        throw new ResourceNotFoundException("Doctor", "id", doctorId);
+    public MessageResponse updateDoctor(Integer doctorId, DoctorRequest doctorRequest){
+        Optional<Doctor> doctorData = doctorRepository.findById(doctorId);
+        if (doctorData.isEmpty()){
+            throw new ResourceNotFoundException("Doctor", "id", doctorId);
         }
         else
-        doctor.get().setFirstName(doctorRequest.getFirstName());
-        doctor.get().setLastname(doctorRequest.getLastname());
-        doctor.get().setPhoneNumber(doctorRequest.getPhoneNumber());
-        doctor.get().setEmail(doctorRequest.getEmail());
-        doctor.get().setDepartment(doctorRequest.getDepartment());
-        doctor.get().setSalary(doctorRequest.getSalary());
-        doctorRepository.save(doctor.get());
-        return doctor;
+            doctorData.get().setFirstName(doctorRequest.getFirstName());
+        doctorData.get().setLastname(doctorRequest.getLastname());
+        doctorData.get().setPhoneNumber(doctorRequest.getPhoneNumber());
+        doctorData.get().setEmail(doctorRequest.getEmail());
+        doctorData.get().setDepartment(doctorRequest.getDepartment());
+        doctorData.get().setSalary(doctorRequest.getSalary());
+        doctorRepository.save(doctorData.get());
+        return new MessageResponse("Doctor edited successfully");
     }
 
     @Override
@@ -56,10 +62,12 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Doctor> getAllDoctor() {
         return doctorRepository.findAll();
     }
-    @Override
-    public void deleteDoctor(Integer doctorId) throws ResourceNotFoundException {
+
+
+    public MessageResponse deleteDoctor(Integer doctorId) throws ResourceNotFoundException {
         if (doctorRepository.getById(doctorId).getId().equals(doctorId)){
             doctorRepository.deleteById(doctorId);
+            return new MessageResponse("Doctor deleted successfully");
         }
         else throw new ResourceNotFoundException("Doctor", "id", doctorId);
     }
